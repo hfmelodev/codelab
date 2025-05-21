@@ -7,7 +7,6 @@ const prismaClientSingleton = () => {
 }
 
 // Estende o tipo de globalThis para incluir a propriedade prismaGlobal
-// biome-ignore lint/suspicious/noShadowRestrictedNames: <explanation>
 declare const globalThis: {
   prismaGlobal: ReturnType<typeof prismaClientSingleton>
 } & typeof global
