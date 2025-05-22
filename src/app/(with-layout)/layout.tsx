@@ -1,3 +1,5 @@
+'use client'
+
 import { AppSidebar } from '@/components/shared/app-sidebar'
 import { SearchInput } from '@/components/shared/search-input'
 import { Button } from '@/components/ui/button'
@@ -6,6 +8,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from '@/components/ui/sidebar'
+import { useUser } from '@clerk/nextjs'
 import { LogIn } from 'lucide-react'
 import Link from 'next/link'
 
@@ -14,6 +17,8 @@ type LayoutProps = {
 }
 
 export default function Layout({ children }: LayoutProps) {
+  const { user } = useUser()
+
   return (
     <SidebarProvider>
       {/* FIXME: Componente de barra lateral customizado */}
@@ -28,12 +33,14 @@ export default function Layout({ children }: LayoutProps) {
             <SearchInput />
           </div>
 
-          <Link href="/auth/sign-in">
-            <Button size="sm">
-              <LogIn />
-              Entrar
-            </Button>
-          </Link>
+          {!user && (
+            <Link href="/auth/sign-in">
+              <Button size="sm">
+                <LogIn />
+                Entrar
+              </Button>
+            </Link>
+          )}
         </header>
 
         {/* FIXME: Componente de conteúdo customizado */}
