@@ -9,7 +9,7 @@ import Link from 'next/link'
 
 import LogoIcon from '@/assets/logo-icon.svg'
 import Logo from '@/assets/logo.svg'
-import { NavItems } from './nav-item'
+import { NavItems } from './nav-items'
 import { NavUser } from './nav-user'
 
 // Herda todas as tipagens do Sidebar e adiciona o collapsible manualmente

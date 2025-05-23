@@ -1,3 +1,5 @@
+'use client'
+
 import { Separator } from '@/components/ui/separator'
 import {
   SidebarGroup,
@@ -5,6 +7,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar'
+import { useUser } from '@clerk/nextjs'
 import {
   BookOpen,
   BookUp2,
@@ -23,6 +26,10 @@ type NavItem = {
 }
 
 export function NavItems() {
+  const { user } = useUser()
+
+  const isAdmin = user?.publicMetadata.role === 'admin'
+
   const navItems: NavItem[] = [
     {
       label: 'Cursos',
@@ -83,9 +90,13 @@ export function NavItems() {
       <SidebarMenu>
         {renderNavItems(navItems)}
 
-        <Separator className="my-2" />
+        {isAdmin && (
+          <>
+            <Separator className="my-2" />
 
-        {renderNavItems(adminNavItems)}
+            {renderNavItems(adminNavItems)}
+          </>
+        )}
       </SidebarMenu>
     </SidebarGroup>
   )
