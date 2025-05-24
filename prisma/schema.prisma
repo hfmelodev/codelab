@@ -20,3 +20,80 @@ model User {
 
   @@map("users")
 }
+
+model CourseTag {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+
+  courseId String?
+  course   Course? @relation(fields: [courseId], references: [id])
+
+  @@map("course_tags")
+}
+
+enum CourseStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum CourseDifficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+model Course {
+  id               String           @id @default(cuid())
+  status           CourseStatus     @default(DRAFT)
+  title            String
+  slug             String           @unique
+  description      String
+  shortDescription String?
+  thumbnail        String
+  price            Float
+  discountPrice    Float?
+  tags             CourseTag[]
+  difficulty       CourseDifficulty @default(EASY)
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt()
+
+  // Um curso pode ter vários módulos
+  modules CourseModule[]
+
+  @@map("courses")
+}
+
+model CourseModule {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  order       Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt()
+
+  courseId String
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  // Um módulo pode ter várias aulas
+  lessons CourseLesson[]
+
+  @@map("course_modules")
+}
+
+model CourseLesson {
+  id           String   @id @default(cuid())
+  title        String
+  description  String
+  videoId      String
+  durationInMs Int
+  order        Int
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt()
+
+  moduleId String
+  module   CourseModule @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+
+  @@map("course_lessons")
+}

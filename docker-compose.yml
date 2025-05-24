@@ -8,8 +8,6 @@ services:
       - POSTGRESQL_DATABASE=codelab-db
     ports:
       - "5432:5432"
-    volumes:
-      - ./postgres-data:/bitnami/postgresql
     healthcheck:                          # Define um healthcheck para o Docker monitorar se o PostgreSQL está funcionando corretamente
       test: ["CMD-SHELL", "pg_isready -U docker"]  # Comando que será executado para verificar se o banco está pronto para aceitar conexões
       interval: 10s                        # Intervalo de tempo entre cada tentativa de healthcheck (a cada 10 segundos)
