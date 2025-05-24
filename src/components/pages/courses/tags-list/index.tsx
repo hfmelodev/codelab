@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma'
 import { TagsList } from './tag-item'
 
 export async function CourseTagsList() {
+  await new Promise(resolve => setTimeout(resolve, 2000))
   const tags = await prisma.courseTag.findMany()
 
   // Realiza a ordenação alfabeticamente dos tags
