@@ -26,8 +26,10 @@
     "clsx": "^2.1.1",
     "lucide-react": "^0.511.0",
     "next": "15.3.2",
+    "query-string": "^9.2.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-use-draggable-scroll": "^0.4.7",
     "svix": "^1.65.0",
     "tailwind-merge": "^3.3.0"
   },

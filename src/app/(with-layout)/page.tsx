@@ -1,10 +1,9 @@
-import { Button } from '@/components/ui/button'
+import { CourseTagsList } from '@/components/pages/courses/tags-list'
 
 export default function Home() {
   return (
     <>
-      <div>Hello world!</div>
-      <Button>Click me</Button>
+      <CourseTagsList />
     </>
   )
 }
