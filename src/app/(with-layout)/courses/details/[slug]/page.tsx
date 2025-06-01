@@ -1,9 +1,10 @@
 import { getCourse } from '@/actions/courses'
+import { CourseProgress } from '@/components/pages/courses/course-details/course-progress'
+import { BackButton } from '@/components/shared/back-button'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { formatDifficulty, formatDuration } from '@/lib/utils'
+import { cn, formatDifficulty, formatDuration } from '@/lib/utils'
 import { format } from 'date-fns'
 import {
   Calendar1,
@@ -71,7 +72,7 @@ export default async function CourseDetailsPage({
     <section className="flex flex-col">
       <div className="flex flex-col justify-between gap-6 md:flex-row">
         <div>
-          <Button>Voltar</Button>
+          <BackButton />
 
           <h1 className="mt-6 font-bold text-3xl sm:text-4xl">
             {course.title}
@@ -144,14 +145,42 @@ export default async function CourseDetailsPage({
             </div>
           </TabsContent>
 
-          <TabsContent value="content">
-            <p>content</p>
+          <TabsContent value="content" className="mt-4 flex flex-col gap-6">
+            {course.modules.map((mod, index) => (
+              <div
+                key={mod.id}
+                className="flex items-center gap-4 rounded-2xl bg-muted p-4"
+              >
+                <div
+                  className={cn(
+                    'flex size-12 min-w-12 items-center justify-center border-2 border-primary',
+                    'rounded-full bg-primary/10 font-bold text-2xl text-primary'
+                  )}
+                >
+                  {index + 1}
+                </div>
+
+                <div>
+                  <div className="flex items-center gap-2">
+                    <p className="font-bold sm:text-xl">{mod.title}</p>
+                    <Badge variant="outline" className="border-primary">
+                      {mod.lessons.length} aula
+                      {mod.lessons.length > 1 && 's'}
+                    </Badge>
+                  </div>
+
+                  {!!mod.description && (
+                    <p className="mt-1 text-muted-foreground text-sm sm:text-base">
+                      {mod.description}
+                    </p>
+                  )}
+                </div>
+              </div>
+            ))}
           </TabsContent>
         </Tabs>
 
-        <div>
-          <p>right</p>
-        </div>
+        <CourseProgress course={course} />
       </div>
     </section>
   )
