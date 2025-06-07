@@ -1,5 +1,6 @@
 'use client'
 
+import { usePreferencesStore } from '@/stores/preferences'
 import dynamic from 'next/dynamic'
 
 const VideoPlayer = dynamic(() => import('./video-player'), {
@@ -11,9 +12,14 @@ type LessonPlayerProps = {
 }
 
 export function LessonPlayer({ lesson }: LessonPlayerProps) {
+  // Aconselhavél buscar somente os dados que realmente serão usados para nao fazer requisicoes desnecessarias
+  const autoPlay = usePreferencesStore(state => state.autoPlay)
+
+  const videoId = lesson.videoId
+
   return (
-    <div className="aspect-video w-full overflow-hidden bg-black">
-      <VideoPlayer videoId={lesson.videoId} autoPlay={false} />
+    <div key={videoId} className="aspect-video w-full overflow-hidden bg-black">
+      <VideoPlayer videoId={videoId} autoPlay={autoPlay} />
     </div>
   )
 }
