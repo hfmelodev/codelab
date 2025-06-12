@@ -2,13 +2,15 @@ import { CircularProgress } from '@/components/shared/circular-progress'
 import { cn, formatDuration } from '@/lib/utils'
 import * as Accordion from '@radix-ui/react-accordion'
 import { ChevronDown } from 'lucide-react'
+import { useMemo } from 'react'
 import { LessonItem } from './lesson-item'
 
 type ModuleItemProps = {
   data: CourseModuleWithLessons
+  completedLessons: CompletedLesson[]
 }
 
-export function ModuleItem({ data }: ModuleItemProps) {
+export function ModuleItem({ data, completedLessons }: ModuleItemProps) {
   const totalLessons = data.lessons.length
   const totalDuration = data.lessons.reduce((acc, lesson) => {
     return acc + lesson.durationInMs
@@ -16,13 +18,26 @@ export function ModuleItem({ data }: ModuleItemProps) {
 
   const formattedDuration = formatDuration(totalDuration)
 
-  const moduleProgress = 100
+  // usar useMemo para otimizar o componente e evitar re-renderizacoes desnecessarias
+  const lessons = useMemo(() => {
+    return data.lessons.map(lesson => {
+      const completed = completedLessons.some(item => item.lessonId === lesson.id)
+
+      return {
+        ...lesson,
+        completed,
+      }
+    })
+  }, [completedLessons, data.lessons])
+
+  const moduleProgress = useMemo(() => {
+    const completedModuleLessons = lessons.filter(lesson => lesson.completed).length
+
+    return (completedModuleLessons / totalLessons) * 100
+  }, [lessons, totalLessons])
 
   return (
-    <Accordion.Item
-      value={data.id}
-      className="group rounded-lg border border-border"
-    >
+    <Accordion.Item value={data.id} className="group rounded-lg border border-border">
       <Accordion.Trigger className="flex w-full items-center gap-4 p-4 outline-none transition-all hover:bg-muted/50">
         <div
           className={cn(
@@ -31,10 +46,7 @@ export function ModuleItem({ data }: ModuleItemProps) {
           )}
         >
           {data.order}
-          <CircularProgress
-            progress={moduleProgress}
-            className="absolute inset-0 h-full w-full"
-          />
+          <CircularProgress progress={moduleProgress} className="absolute inset-0 h-full w-full" />
         </div>
 
         <div className="flex flex-1 flex-col gap-0.5 text-left text-muted-foreground">
@@ -54,7 +66,7 @@ export function ModuleItem({ data }: ModuleItemProps) {
 
       <Accordion.Content className="overflow-hidden data-[state=closed]:animate-slideUp data-[state=open]:animate-slideDown">
         <div className="flex flex-col p-2">
-          {data.lessons.map(lesson => (
+          {lessons.map(lesson => (
             <LessonItem key={lesson.id} lesson={lesson} />
           ))}
         </div>

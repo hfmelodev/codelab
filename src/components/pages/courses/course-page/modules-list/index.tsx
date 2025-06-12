@@ -1,10 +1,14 @@
 'use client'
 
+import { getCourseProgress } from '@/actions/course-progress'
 import { Button } from '@/components/ui/button'
+import { queryKeys } from '@/constants/query-keys'
 import { cn } from '@/lib/utils'
 import { usePreferencesStore } from '@/stores/preferences'
 import * as Accordion from '@radix-ui/react-accordion'
+import { useQuery } from '@tanstack/react-query'
 import { PanelRightOpen } from 'lucide-react'
+import { useParams } from 'next/navigation'
 import { useEffect, useRef } from 'react'
 import { ModuleItem } from './module-item'
 
@@ -13,7 +17,10 @@ type ModulesListProps = {
 }
 
 export function ModulesList({ modules }: ModulesListProps) {
-  const moduleId = modules[0].id
+  const params = useParams()
+  const courseSlug = params.slug as string
+
+  const moduleId = params.moduleId as string
 
   const { expandedModule, setExpandedModule, modulesListCollapsed, setModulesListCollapsed } = usePreferencesStore()
 
@@ -31,6 +38,14 @@ export function ModulesList({ modules }: ModulesListProps) {
 
     setModulesListCollapsed(window.innerWidth < 768)
   }, [setModulesListCollapsed])
+
+  const { data: courseProgress } = useQuery({
+    queryKey: queryKeys.courseProgress(courseSlug),
+    queryFn: () => getCourseProgress(courseSlug),
+    enabled: !!courseSlug,
+  })
+
+  const completedLessons = courseProgress?.completedLessons ?? []
 
   return (
     <aside
@@ -71,7 +86,7 @@ export function ModulesList({ modules }: ModulesListProps) {
             onValueChange={setExpandedModule}
           >
             {modules.map(courseModule => (
-              <ModuleItem key={courseModule.id} data={courseModule} />
+              <ModuleItem key={courseModule.id} data={courseModule} completedLessons={completedLessons} />
             ))}
           </Accordion.Root>
         </>

@@ -1,8 +1,7 @@
+import { getCourseProgress } from '@/actions/course-progress'
 import { getCourse } from '@/actions/courses'
-import { LessonDetails } from '@/components/pages/courses/course-page/lesson-details'
-import { ModulesList } from '@/components/pages/courses/course-page/modules-list'
-import { TopDetails } from '@/components/pages/courses/course-page/top-details'
-import { notFound } from 'next/navigation'
+import { Skeleton } from '@/components/ui/skeleton'
+import { notFound, redirect } from 'next/navigation'
 
 type CoursePageProps = {
   params: Promise<{
@@ -17,15 +16,27 @@ export default async function CoursePage({ params }: CoursePageProps) {
 
   if (!course) return notFound()
 
-  return (
-    <div className="grid h-screen w-full grid-cols-[1fr_auto] overflow-hidden">
-      <div className="h-full w-full overflow-y-auto">
-        <TopDetails course={course} />
+  // TODO: Verificar se o usuário possui o curso
 
-        <LessonDetails lesson={course.modules[0].lessons[0]} />
-      </div>
+  const { completedLessons } = await getCourseProgress(slug)
 
-      <ModulesList modules={course.modules} />
-    </div>
-  )
+  const allLessons = course.modules.flatMap(mod => mod.lessons)
+
+  let lessonToRedirect = allLessons[0]
+
+  const firstUncompletedLesson = allLessons.find(lesson => {
+    const completed = completedLessons.some(completedLesson => completedLesson.lessonId === lesson.id)
+
+    return !completed
+  })
+
+  if (firstUncompletedLesson) {
+    lessonToRedirect = firstUncompletedLesson
+  }
+
+  if (lessonToRedirect) {
+    redirect(`/courses/${slug}/${lessonToRedirect.moduleId}/lesson/${lessonToRedirect.id}`)
+  }
+
+  return <Skeleton className="flex-1" />
 }

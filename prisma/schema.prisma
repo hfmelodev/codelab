@@ -18,6 +18,8 @@ model User {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt()
 
+  completedLessons CompletedLesson[]
+
   @@map("users")
 }
 
@@ -62,6 +64,8 @@ model Course {
   // Um curso pode ter vários módulos
   modules CourseModule[]
 
+  completedLessons CompletedLesson[]
+
   @@map("courses")
 }
 
@@ -95,5 +99,24 @@ model CourseLesson {
   moduleId String
   module   CourseModule @relation(fields: [moduleId], references: [id], onDelete: Cascade)
 
+  completedLessons CompletedLesson[]
+
   @@map("course_lessons")
+}
+
+model CompletedLesson {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+
+  lessonId String
+  lesson   CourseLesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  courseId String
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("completed_lessons")
 }

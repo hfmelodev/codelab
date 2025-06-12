@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils'
 import { ptBR } from '@clerk/localizations'
 import { ClerkProvider } from '@clerk/nextjs'
 
+import { ClientProviders } from '@/components/shared/client-providers'
 import '@/styles/clerk.css'
 import '@/styles/globals.css'
 
@@ -33,7 +34,7 @@ export default function RootLayout({
     >
       <html lang="pt-BR" suppressHydrationWarning>
         <body className={cn(nunito.variable, 'dark font-sans antialiased')}>
-          {children}
+          <ClientProviders>{children}</ClientProviders>
         </body>
       </html>
     </ClerkProvider>
