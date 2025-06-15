@@ -5,6 +5,7 @@ import { Avatar } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { queryKeys } from '@/constants/query-keys'
+import { cn } from '@/lib/utils'
 import { useUser } from '@clerk/nextjs'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
@@ -19,19 +20,22 @@ const commentInputFormSchema = z.object({
 
 type commentInputFormType = z.infer<typeof commentInputFormSchema>
 
-export function CommentInput() {
+type CommentInputProps = {
+  parentCommentId?: string
+  autoFocus?: boolean
+  className?: string
+  onCancel?: () => void
+  onSuccess?: () => void
+}
+
+export function CommentInput({ parentCommentId, autoFocus, className, onCancel, onSuccess }: CommentInputProps) {
   const { user } = useUser()
   const params = useParams<{ slug: string; lessonId: string }>()
 
   const lessonId = params.lessonId
   const courseSlug = params.slug
 
-  const {
-    control,
-    handleSubmit,
-    reset,
-    formState: { isSubmitting },
-  } = useForm<commentInputFormType>({
+  const { control, handleSubmit, reset } = useForm<commentInputFormType>({
     resolver: zodResolver(commentInputFormSchema),
     defaultValues: {
       content: '',
@@ -48,6 +52,8 @@ export function CommentInput() {
 
       reset()
 
+      if (onSuccess) onSuccess()
+
       toast.success('Comentário criado com sucesso')
     },
     onError: () => {
@@ -56,22 +62,36 @@ export function CommentInput() {
   })
 
   async function handleFormContent(data: commentInputFormType) {
-    createComment({ courseSlug, lessonId, content: data.content })
+    createComment({ courseSlug, lessonId, content: data.content, parentId: parentCommentId })
   }
 
   return (
-    <form className="flex gap-4" onSubmit={handleSubmit(handleFormContent)}>
+    <form className={cn('flex gap-4', className)} onSubmit={handleSubmit(handleFormContent)}>
       <Avatar src={user?.imageUrl} fallback={user?.fullName} />
 
       <Controller
         name="content"
         control={control}
         render={({ field }) => (
-          <Textarea placeholder="Deixe seu comentário..." className="min-h-[100px]" {...field} disabled={isCreatingComment} />
+          <Textarea
+            placeholder="Deixe seu comentário..."
+            className="min-h-[100px]"
+            {...field}
+            disabled={isCreatingComment}
+            autoFocus={autoFocus}
+          />
         )}
       />
 
-      <Button type="submit">Comentar</Button>
+      <div className="flex gap-2">
+        {onCancel && (
+          <Button type="button" variant="outline" onClick={onCancel}>
+            Cancelar
+          </Button>
+        )}
+
+        <Button type="submit">Comentar</Button>
+      </div>
     </form>
   )
 }

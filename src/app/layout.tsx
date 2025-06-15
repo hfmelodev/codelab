@@ -4,6 +4,10 @@ import { Nunito } from 'next/font/google'
 import { cn } from '@/lib/utils'
 import { ptBR } from '@clerk/localizations'
 import { ClerkProvider } from '@clerk/nextjs'
+import { setDefaultOptions } from 'date-fns'
+import { ptBR as dateFnsPtBR } from 'date-fns/locale/pt-BR'
+
+setDefaultOptions({ locale: dateFnsPtBR })
 
 import { ClientProviders } from '@/components/shared/client-providers'
 import '@/styles/clerk.css'

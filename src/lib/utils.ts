@@ -14,9 +14,7 @@ export function formatDuration(durationInMs: number, showHours = false) {
   const formatNumber = (num: number) => num.toString().padStart(2, '0')
 
   if (hours > 0 || showHours) {
-    return `${formatNumber(hours)}:${formatNumber(minutes)}:${formatNumber(
-      seconds
-    )}`
+    return `${formatNumber(hours)}:${formatNumber(minutes)}:${formatNumber(seconds)}`
   }
 
   return `${formatNumber(minutes)}:${formatNumber(seconds)}`
@@ -38,4 +36,10 @@ export function formatPrice(price: number) {
     style: 'currency',
     currency: 'BRL',
   }).format(price)
+}
+
+export function formatName(firstName: string, lastName?: string | null) {
+  if (!lastName) return firstName
+
+  return `${firstName} ${lastName}`
 }
