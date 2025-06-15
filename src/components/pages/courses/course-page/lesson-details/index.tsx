@@ -1,3 +1,4 @@
+import { LessonComments } from './comments'
 import { LessonPlayer } from './lesson-player'
 
 type LessonDetailsProps = {
@@ -15,6 +16,7 @@ export function LessonDetails({ lesson, nextLesson }: LessonDetailsProps) {
         <p className="text-muted-foreground">{lesson.description}</p>
 
         {/* Lesson Comments */}
+        <LessonComments />
       </div>
     </>
   )

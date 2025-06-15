@@ -49,7 +49,7 @@ export function LessonPlayer({ lesson, nextLesson }: LessonPlayerProps) {
   }
 
   return (
-    <div key={videoId} className="aspect-video w-full overflow-hidden bg-black">
+    <div key={videoId} className="aspect-video w-full overflow-hidden rounded-none">
       <VideoPlayer videoId={videoId} autoPlay={autoPlay} onEnd={handleMoveToNextLesson} />
     </div>
   )

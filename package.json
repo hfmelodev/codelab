@@ -15,6 +15,7 @@
     "@biomejs/biome": "^1.9.4",
     "@clerk/localizations": "^3.16.0",
     "@clerk/nextjs": "^6.19.4",
+    "@hookform/resolvers": "^5.1.1",
     "@prisma/client": "^6.8.2",
     "@radix-ui/react-accordion": "^1.2.11",
     "@radix-ui/react-avatar": "^1.1.10",
@@ -36,9 +37,12 @@
     "query-string": "^9.2.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-hook-form": "^7.58.0",
     "react-use-draggable-scroll": "^0.4.7",
+    "sonner": "^2.0.5",
     "svix": "^1.65.0",
     "tailwind-merge": "^3.3.0",
+    "zod": "^3.25.64",
     "zustand": "^5.0.5"
   },
   "devDependencies": {
