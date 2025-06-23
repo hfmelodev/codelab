@@ -20,6 +20,9 @@ const nunito = Nunito({
 
 export const metadata: Metadata = {
   title: 'CodeLab',
+  icons: {
+    icon: '/logo-icon.svg',
+  },
 }
 
 export default function RootLayout({

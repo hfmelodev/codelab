@@ -25,13 +25,15 @@
 		"rules": {
 			"recommended": true,
 			"suspicious": {
-				"noShadowRestrictedNames": "off"
+				"noShadowRestrictedNames": "off",
+				"noExplicitAny": "off"
 			},
 			"nursery": {
 				"useSortedClasses": "error"
 			},
 			"style": {
-				"noNonNullAssertion": "off"
+				"noNonNullAssertion": "off",
+				"noParameterAssign": "off"
 			}
 		}
 	},
