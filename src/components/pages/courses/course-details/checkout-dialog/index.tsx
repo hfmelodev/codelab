@@ -10,6 +10,7 @@ import PixIcon from '@/assets/pix.svg'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { CreditCardForm } from './credit-card'
+import { PixForm } from './pix'
 
 type CheckoutDialogProps = {
   open: boolean
@@ -38,6 +39,10 @@ export function CheckoutDialog({ open, setOpen, course }: CheckoutDialogProps) {
     // TODO: Validar se o usuário está logado
 
     setStep(2)
+  }
+
+  function handleBack() {
+    setStep(1)
   }
 
   return (
@@ -80,7 +85,7 @@ export function CheckoutDialog({ open, setOpen, course }: CheckoutDialogProps) {
 
           {step === 2 && paymentMethod === 'CREDIT_CARD' && <CreditCardForm onBack={() => setStep(1)} />}
 
-          {step === 2 && paymentMethod === 'PIX' && <>{/* Pix Form */}</>}
+          {step === 2 && paymentMethod === 'PIX' && <PixForm onBack={handleBack} />}
         </div>
       }
     />

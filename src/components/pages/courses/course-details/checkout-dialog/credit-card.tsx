@@ -1,3 +1,5 @@
+'use client'
+
 import { Button } from '@/components/ui/button'
 import { FormField } from '@/components/ui/form/field'
 import { InputField } from '@/components/ui/form/input-field'
