@@ -8,13 +8,27 @@ services:
       - POSTGRESQL_DATABASE=codelab-db
     ports:
       - "5432:5432"
-    healthcheck:                          # Define um healthcheck para o Docker monitorar se o PostgreSQL está funcionando corretamente
-      test: ["CMD-SHELL", "pg_isready -U docker"]  # Comando que será executado para verificar se o banco está pronto para aceitar conexões
-      interval: 10s                        # Intervalo de tempo entre cada tentativa de healthcheck (a cada 10 segundos)
-      timeout: 5s                          # Tempo máximo que o healthcheck pode levar antes de considerar a tentativa como falha (5 segundos)
-      retries: 5                           # Quantidade de tentativas consecutivas que podem falhar antes do container ser considerado "unhealthy"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U docker"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     volumes:
       - postgres-data:/bitnami/postgresql
 
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: hilquiasfmelo@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: benjamin
+    ports:
+      - "4435:80"  # Acesse via http://localhost:4435
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+      - ./backups:/backups  # opcional: para backups/restaurações via interface
+
 volumes:
   postgres-data:
+  pgadmin_data:

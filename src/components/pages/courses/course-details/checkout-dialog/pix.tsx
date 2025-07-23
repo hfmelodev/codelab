@@ -1,5 +1,6 @@
 'use client'
 
+import { createPixCheckout } from '@/actions/payment'
 import { Button } from '@/components/ui/button'
 import { FormField } from '@/components/ui/form/field'
 import { InputField } from '@/components/ui/form/input-field'
@@ -7,18 +8,21 @@ import { Form } from '@/components/ui/form/primitives'
 import { Input } from '@/components/ui/input'
 import { pixCheckoutFormSchema } from '@/server/schemas/payment'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useMutation } from '@tanstack/react-query'
 import { ArrowLeft, ArrowRight, Check } from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import type { z } from 'zod'
 
 type FormData = z.infer<typeof pixCheckoutFormSchema>
 
 type PixFormProps = {
   onBack: () => void
+  course: Course
 }
 
-export function PixForm({ onBack }: PixFormProps) {
+export function PixForm({ onBack, course }: PixFormProps) {
   const [step, setStep] = useState(1)
 
   const form = useForm<FormData>({
@@ -34,8 +38,30 @@ export function PixForm({ onBack }: PixFormProps) {
 
   const { handleSubmit } = form
 
+  const { mutateAsync: handleCreateInvoice, isPending: isCreatingInvoice } = useMutation({
+    mutationFn: createPixCheckout,
+    onSuccess: () => {
+      setStep(2)
+    },
+  })
+
   async function onSubmit(data: FormData) {
-    console.log(data)
+    // TODO: Criar lógica para gerar o QR Code validando CEP
+
+    toast.promise(
+      handleCreateInvoice({
+        courseId: course.id,
+        cpf: data.cpf,
+        name: data.name,
+        postalCode: data.postalCode,
+        addressNumber: data.addressNumber,
+      }),
+      {
+        loading: 'Gerando QR Code...',
+        success: 'QR Code gerado com sucesso',
+        error: 'Erro ao gerar QR Code',
+      }
+    )
   }
 
   function handleBack() {
@@ -76,7 +102,9 @@ export function PixForm({ onBack }: PixFormProps) {
             </div>
           </div>
         ) : (
-          <div>PIX</div>
+          <div>
+            <p>QR Code do PIX</p>
+          </div>
         )}
 
         <div className="mt-6 flex w-full flex-col items-center justify-between gap-4 md:flex-row md:gap-0">
@@ -86,7 +114,7 @@ export function PixForm({ onBack }: PixFormProps) {
           </Button>
 
           {step === 1 ? (
-            <Button type="submit" className="w-full md:w-max">
+            <Button type="submit" className="w-full md:w-max" disabled={isCreatingInvoice}>
               Continuar
               <ArrowRight />
             </Button>
