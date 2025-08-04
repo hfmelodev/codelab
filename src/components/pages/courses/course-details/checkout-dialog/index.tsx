@@ -45,6 +45,10 @@ export function CheckoutDialog({ open, setOpen, course }: CheckoutDialogProps) {
     setStep(1)
   }
 
+  function handleClose() {
+    setOpen(false)
+  }
+
   return (
     <Dialog
       open={open}
@@ -85,7 +89,7 @@ export function CheckoutDialog({ open, setOpen, course }: CheckoutDialogProps) {
 
           {step === 2 && paymentMethod === 'CREDIT_CARD' && <CreditCardForm onBack={() => setStep(1)} />}
 
-          {step === 2 && paymentMethod === 'PIX' && <PixForm onBack={handleBack} course={course} />}
+          {step === 2 && paymentMethod === 'PIX' && <PixForm onBack={handleBack} course={course} onClose={handleClose} />}
         </div>
       }
     />

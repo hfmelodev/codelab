@@ -106,3 +106,21 @@ export async function createPixCheckout(payload: PixCheckoutSchema) {
     invoiceId: payment.id as string,
   }
 }
+
+export async function getPixQrCode(invoiceId: string) {
+  await getUser()
+
+  const { data } = await asaasApi.get(`/payments/${invoiceId}/pixQrCode`)
+
+  return data
+}
+
+export async function getInvoiceStatus(invoiceId: string) {
+  await getUser()
+
+  const { data } = await asaasApi.get(`/payments/${invoiceId}`)
+
+  return {
+    status: data.status as string,
+  }
+}
